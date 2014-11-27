@@ -276,6 +276,8 @@ class FileUpload {
     $file->size = $this->fixIntegerOverflow(intval($size));
     $file->setTypeFromPath($tmp_name);
 
+    $this->processCallbacksFor('beforeValidate', $file);
+
     if($this->validate($tmp_name, $file, $error, $index)) {
       // Now that we passed the validation, we can work with the file
       $upload_path = $this->pathresolver->getUploadPath();
