@@ -71,7 +71,7 @@ class Simple implements Validator {
   /**
    * @see Validator
    */
-  public function validate($tmp_name, File $file, $current_size) {
+  public function validate($tmp_name, File $file, $current_size, $event=null) {
     if(! in_array($file->type, $this->allowed_types)) {
       $file->error = $this->messages[self::UPLOAD_ERR_BAD_TYPE];
       return false;

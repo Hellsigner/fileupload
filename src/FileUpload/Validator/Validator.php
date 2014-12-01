@@ -11,5 +11,5 @@ interface Validator {
    * @param  integer $current_size
    * @return boolean
    */
-  public function validate($tmp_name, File $file, $current_size);
+  public function validate($tmp_name, File $file, $current_size, $event=null);
 }
