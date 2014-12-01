@@ -311,12 +311,12 @@ class FileUpload {
       }
 
       if($file->size == $file_size) {
-        // Yay, upload is complete!
-        $file->path = $file_path;
-        $file->completed = true;
 
         // Final validation step. It just works..
-        if ($this->validate($tmp_name, $file, $error, 'completed')) {
+        if ($this->validateCustom($file_path, $file, $file_size, 'completed')) {
+            // Yay, upload is complete!
+            $file->path = $file_path;
+            $file->completed = true;
             $this->processCallbacksFor('completed', $file);
         } else {
             $this->filesystem->unlink($file_path);
@@ -454,15 +454,24 @@ class FileUpload {
       $current_size = $content_length;
     }
 
-    // Now that we passed basic, implementation-agnostic tests,
-    // let's do custom validators
-    foreach($this->validators as $validator) {
-      if(! $validator->validate($tmp_name, $file, $current_size)) {
+    if (! $this->validateCustom($tmp_name, $file, $current_size, $index))
+    {
         return false;
-      }
     }
 
     return true;
+  }
+
+  public function validateCustom($tmp_name, $file, $current_size, $event)
+  {
+      // Now that we passed basic, implementation-agnostic tests,
+      // let's do custom validators
+      foreach($this->validators as $validator) {
+          if(! $validator->validate($tmp_name, $file, $current_size, $event)) {
+              return false;
+          }
+      }
+      return true;
   }
 
   /**
