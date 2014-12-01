@@ -314,7 +314,14 @@ class FileUpload {
         // Yay, upload is complete!
         $file->path = $file_path;
         $file->completed = true;
-        $this->processCallbacksFor('completed', $file);
+
+        // Final validation step. It just works..
+        if ($this->validate($tmp_name, $file, $error, 'completed')) {
+            $this->processCallbacksFor('completed', $file);
+        } else {
+            $this->filesystem->unlink($file_path);
+        }
+
       } else {
         $file->size = $file_size;
 
